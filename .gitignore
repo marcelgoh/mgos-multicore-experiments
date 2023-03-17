@@ -1,0 +1,16 @@
+# mongoose-os
+build/
+deps/
+
+# Certificates
+*.crt
+*.pem
+*.key
+*.csr
+/.vscode/*.db-shm
+/.vscode/*.db-wal
+certs/
+
+# VS Code
+debug.log
+.vscode/settings.json
