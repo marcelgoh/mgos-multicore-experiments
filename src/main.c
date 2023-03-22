@@ -47,19 +47,29 @@ enum mgos_app_init_result mgos_app_init(void)
 {
   mgos_gpio_set_mode(LED12, MGOS_GPIO_MODE_OUTPUT);
   mgos_gpio_set_mode(LED13, MGOS_GPIO_MODE_OUTPUT);
-  //mgos_gpio_set_mode(LED14, MGOS_GPIO_MODE_OUTPUT);
+  mgos_gpio_set_mode(LED14, MGOS_GPIO_MODE_OUTPUT);
 
-  p_params_t pParams1 = (p_params_t) malloc(sizeof(params_t));
-  pParams1->led = LED12;
-  pParams1->ticks = 1000;
+  TaskHandle_t task12 = NULL;
+  TaskHandle_t task13 = NULL;
+  TaskHandle_t task14 = NULL;
 
-  xTaskCreate(vLEDTask, "LED12", 500, pParams1, 1, NULL );
+  p_params_t pParams12 = (p_params_t) malloc(sizeof(params_t));
+  pParams12->led = LED12;
+  pParams12->ticks = 1000;
 
-  p_params_t pParams2 = (p_params_t) malloc(sizeof(params_t));
-  pParams2->led = LED13;
-  pParams2->ticks = 250;
+  xTaskCreatePinnedToCore(vLEDTask, "LED12", 500, pParams12, 1, task12, 0);
 
-  xTaskCreate(vLEDTask, "LED13", 500, pParams2, 1, NULL );
+  p_params_t pParams13 = (p_params_t) malloc(sizeof(params_t));
+  pParams13->led = LED13;
+  pParams13->ticks = 500;
+
+  xTaskCreatePinnedToCore(vLEDTask, "LED13", 500, pParams13, 1, task13, 1);
+
+  p_params_t pParams14 = (p_params_t) malloc(sizeof(params_t));
+  pParams14->led = LED14;
+  pParams14->ticks = 250;
+
+  xTaskCreatePinnedToCore(vLEDTask, "LED14", 500, pParams14, 1, task14, 0);
 
   return MGOS_APP_INIT_SUCCESS;
 }
